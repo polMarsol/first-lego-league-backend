@@ -1,4 +1,4 @@
-# Spring Boot Template
+# First Lego League Backend
 
 Template for a Spring Boot project including Spring REST, HATEOAS, JPA, etc. Additional details: [HELP.md](HELP.md)
 
