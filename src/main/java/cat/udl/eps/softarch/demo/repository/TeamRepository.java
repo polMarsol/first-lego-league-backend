@@ -17,5 +17,5 @@ public interface TeamRepository extends CrudRepository<Team, String>, PagingAndS
 
 	List<Team> findByMembersRole(@Param("role") String role);
 
-	List<Team> findByNameContainingIgnoreCase(@Param("name") String name);
+	List<Team> findByName(@Param("name") String name);
 }
