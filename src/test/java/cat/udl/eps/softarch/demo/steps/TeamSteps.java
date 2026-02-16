@@ -13,20 +13,21 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import java.util.List;
 import java.util.stream.IntStream;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 public class TeamSteps {
 
-	@Autowired
-	private TeamRepository teamRepository;
-
-	@Autowired
-	private TeamMemberRepository teamMemberRepository;
+	private final TeamRepository teamRepository;
+	private final TeamMemberRepository teamMemberRepository;
 
 	private Team currentTeam;
 	private Exception lastException;
 	private List<Team> searchResults;
+
+	public TeamSteps(TeamRepository teamRepository, TeamMemberRepository teamMemberRepository) {
+		this.teamRepository = teamRepository;
+		this.teamMemberRepository = teamMemberRepository;
+	}
 
 	@Given("the system is empty")
 	public void clearDB() {
@@ -67,7 +68,7 @@ public class TeamSteps {
 	@Then("the team should have {int} members")
 	@Transactional
 	public void theTeamShouldHaveMembers(int count) {
-		Team savedTeam = teamRepository.findById(currentTeam.getName()).orElseThrow();
+		Team savedTeam = teamRepository.findById(currentTeam.getId()).orElseThrow();
 		assertEquals(count, savedTeam.getMembers().size());
 	}
 
@@ -76,6 +77,8 @@ public class TeamSteps {
 		try {
 			Team team = new Team(name);
 			team.setCity(city);
+			team.setFoundationYear(2000);
+			team.setCategory("Challenge");
 			teamRepository.save(team);
 		} catch (Exception e) {
 			lastException = e;
@@ -108,7 +111,7 @@ public class TeamSteps {
 	@Transactional
 	public void tryAddExtraMember() {
 		try {
-			Team loadedTeam = teamRepository.findById(currentTeam.getName()).orElseThrow();
+			Team loadedTeam = teamRepository.findById(currentTeam.getId()).orElseThrow();
 			TeamMember extra = new TeamMember();
 			extra.setName("Extra Member");
 			extra.setRole("Substitute");
@@ -154,7 +157,7 @@ public class TeamSteps {
 
 	@When("I change the city to {string}")
 	public void iChangeTheCity(String newCity) {
-		currentTeam = teamRepository.findById(currentTeam.getName()).orElseThrow();
+		currentTeam = teamRepository.findById(currentTeam.getId()).orElseThrow();
 		currentTeam.setCity(newCity);
 		teamRepository.save(currentTeam);
 	}

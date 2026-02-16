@@ -43,10 +43,11 @@ public class Team extends UriEntity<String> {
 	private String name;
 
 	@NotBlank(message = "City is mandatory")
+	@Size(max = 100, message = "City name too long")
 	@Column(name = "city", length = 100)
 	private String city;
 
-	@Min(value = 1998, message = "Foundation year must be after the FLL foundation year (1998)")
+	@Min(value = 1998, message = "Foundation year must be 1998 or later")
 	private int foundationYear;
 
 	@Size(max = 100, message = "Educational center name too long")

@@ -29,6 +29,12 @@ import jakarta.persistence.GenerationType;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Table(name = "team_member")
 public class TeamMember extends UriEntity<Long> {
+
+	@Override
+	public Long getId() {
+		return id;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
@@ -49,10 +55,11 @@ public class TeamMember extends UriEntity<Long> {
 	private String tShirtSize;
 
 	@NotBlank(message = "Role is mandatory")
+	@Size(max = 50, message = "Role name too long")
 	@Column(length = 50)
 	private String role;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "team_name", nullable = false)
 	@NotNull(message = "A member must belong to a team")
 	@JsonIdentityReference(alwaysAsId = true)
