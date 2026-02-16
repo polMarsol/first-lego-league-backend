@@ -15,16 +15,28 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Table(name = "team")
-public class Team {
+public class Team extends UriEntity<String> {
+
+	@Override
+	public String getId() {
+		return name;
+	}
+
 	@Id
+	@EqualsAndHashCode.Include
 	@NotBlank(message = "Name is mandatory")
 	@Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
 	@Column(name = "name", length = 50)
@@ -38,11 +50,9 @@ public class Team {
 	private int foundationYear;
 
 	@Size(max = 100, message = "Educational center name too long")
-	@Column(length = 100)
 	private String educationalCenter;
 
 	@NotBlank(message = "Category is mandatory")
-	@Column(length = 50)
 	private String category;
 
 	@PastOrPresent(message = "Inscription date cannot be in the future")
@@ -50,6 +60,7 @@ public class Team {
 	private LocalDate inscriptionDate;
 
 	@OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
+	@ToString.Exclude
 	private List<TeamMember> members = new ArrayList<>();
 
 	public Team(String name) {

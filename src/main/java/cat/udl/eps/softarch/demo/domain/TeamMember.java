@@ -1,6 +1,7 @@
 package cat.udl.eps.softarch.demo.domain;
 
 import java.time.LocalDate;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -13,27 +14,31 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 
-
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true, callSuper = false)
 @Table(name = "team_member")
-public class TeamMember {
+public class TeamMember extends UriEntity<Long> {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@EqualsAndHashCode.Include
 	private Long id;
 
-	@NotBlank(message = "Name is mandatory")
+	@NotBlank(message = "Member name is mandatory")
 	@Size(min = 2, max = 100, message = "Name must be between 2 and 100 characters")
 	private String name;
 
-	@NotNull(message = "Birth date is mandatory")
+	@NotNull(message = "Birth date cannot be null")
 	@Past(message = "Birth date must be in the past")
 	private LocalDate birthDate;
 
@@ -50,5 +55,6 @@ public class TeamMember {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "team_name", nullable = false)
 	@NotNull(message = "A member must belong to a team")
+	@JsonIdentityReference(alwaysAsId = true)
 	private Team team;
 }

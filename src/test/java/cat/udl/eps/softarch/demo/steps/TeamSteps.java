@@ -171,4 +171,14 @@ public class TeamSteps {
 	public void verifySearchResults(int count) {
 		assertEquals(count, searchResults.size());
 	}
+
+	@Given("the system is empty")
+	public void clearDB() {
+		teamMemberRepository.deleteAll();
+		teamRepository.deleteAll();
+		// Reseteamos variables de estado para evitar falsos positivos
+		currentTeam = null;
+		lastException = null;
+		searchResults = null;
+	}
 }
