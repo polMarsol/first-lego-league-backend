@@ -31,5 +31,5 @@ Feature: Manage Venue
         And There is no venue with name "Delete Venue"
         And There is a venue with name "Delete Venue" and city "Tarragona"
         When I delete the venue with name "Delete Venue"
-        Then The response code is 200
+        Then The response code is 204
         And No venue with name "Delete Venue" exists

@@ -11,8 +11,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.NoSuchElementException;
 import org.springframework.http.MediaType;
 import cat.udl.eps.softarch.demo.domain.Venue;
 import cat.udl.eps.softarch.demo.repository.VenueRepository;
@@ -31,12 +30,7 @@ public class ManageVenueStepDefs {
 
 	@Given("^There is no venue with name \"([^\"]*)\"$")
 	public void thereIsNoVenueWithName(String name) {
-		List<Venue> venues = new ArrayList<>(venueRepository.findAll());
-		for (Venue venue : venues) {
-			if (name.equals(venue.getName())) {
-				venueRepository.deleteById(venue.getId());
-			}
-		}
+		venueRepository.findByName(name).ifPresent(venueRepository::delete);
 	}
 
 	@Given("^There is a venue with name \"([^\"]*)\" and city \"([^\"]*)\"$")
@@ -97,9 +91,6 @@ public class ManageVenueStepDefs {
 		Venue venue = findVenueByName(name);
 		stepDefs.result = stepDefs.mockMvc.perform(
 				delete("/venues/{id}", venue.getId())
-						.contentType(MediaType.APPLICATION_JSON)
-						.accept(MediaType.APPLICATION_JSON)
-						.characterEncoding(StandardCharsets.UTF_8)
 						.with(AuthenticationStepDefs.authenticate()))
 				.andDo(print());
 	}
@@ -125,13 +116,11 @@ public class ManageVenueStepDefs {
 
 	@And("^No venue with name \"([^\"]*)\" exists$")
 	public void noVenueWithNameExists(String name) {
-		assertFalse(venueRepository.findAll().stream().anyMatch(venue -> name.equals(venue.getName())));
+		assertFalse(venueRepository.findByName(name).isPresent());
 	}
 
 	private Venue findVenueByName(String name) {
-		return venueRepository.findAll().stream()
-				.filter(venue -> name.equals(venue.getName()))
-				.findFirst()
-				.orElseThrow();
+		return venueRepository.findByName(name)
+				.orElseThrow(() -> new NoSuchElementException("Venue not found with name: " + name));
 	}
 }
