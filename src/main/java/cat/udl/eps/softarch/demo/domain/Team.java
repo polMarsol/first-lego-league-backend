@@ -65,6 +65,7 @@ public class Team extends UriEntity<String> {
 
 	@OneToMany(mappedBy = "team", cascade = CascadeType.ALL, orphanRemoval = true)
 	@ToString.Exclude
+	@Size(max = 10, message = "A team cannot have more than 10 members")
 	private List<TeamMember> members = new ArrayList<>();
 
 	public Team(String name) {
@@ -79,9 +80,6 @@ public class Team extends UriEntity<String> {
 	}
 
 	public void addMember(TeamMember member) {
-		if (members.size() >= 10) {
-			throw new IllegalStateException("A team cannot have more than 10 members");
-		}
 		members.add(member);
 		member.setTeam(this);
 	}
