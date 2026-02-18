@@ -6,6 +6,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.ManyToMany; // relation w team
+import java.util.Set; // relation w team
+import java.util.HashSet; // relation w team
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -23,9 +26,10 @@ public class Coach extends UriEntity<Integer> {
 
 	@NotBlank
 	@Email
+
 	private String emailAddress;
 	private String phoneNumber;
 
-	// La relación con Team será creada por el Team #4 con su clase Team
-
+	@ManyToMany(mappedBy = "trainedBy")
+	private Set<Team> teams = new HashSet<>();
 }

@@ -5,8 +5,8 @@ Feature: Manage Coaches
 
   Background:
     # Primer creem l'usuari a la base de dades i després fem el login
-    Given There is a registered user with username "admin" and password "admin" and email "admin@fll.udl.cat" 
-    And I login as "admin" with password "admin" 
+    Given There is a registered user with username "admin" and password "admin" and email "admin@fll.udl.cat"
+    And I login as "admin" with password "admin"
 
   Scenario: Create a new coach
     # Aquesta frase ha de coincidir amb la Regex del teu CoachStepDefs.java
