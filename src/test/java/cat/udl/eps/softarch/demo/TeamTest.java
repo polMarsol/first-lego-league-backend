@@ -41,4 +41,12 @@ class TeamTest {
 		assertNotNull(team.getInscriptionDate());
 		assertEquals(LocalDate.now(), team.getInscriptionDate());
 	}
+
+	@Test
+	void testPrePersistWithExistingDate() {
+		LocalDate yesterday = LocalDate.now().minusDays(1);
+		team.setInscriptionDate(yesterday);
+		team.prePersist();
+		assertEquals(yesterday, team.getInscriptionDate()); // No ha de sobreescriure-la
+	}
 }
