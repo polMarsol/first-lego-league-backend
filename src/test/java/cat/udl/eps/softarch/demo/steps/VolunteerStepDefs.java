@@ -168,22 +168,27 @@ public class VolunteerStepDefs {
         assertEquals(count, team.getFloaters().size());
     }
 
-    @When("I try to assign the floater {string} to team {string}")
-    @Transactional
-    public void tryAssignFloaterToTeam(String studentCode, String teamName) {
-        try {
-		   assignFloaterToTeam(studentCode, teamName);
-        } catch (Exception e) {
-            lastException = e;
-        }
-    }
+	@When("I try to assign the floater {string} to team {string}")
+	@Transactional
+	public void tryAssignFloaterToTeam(String studentCode, String teamName) {
+		try {
+			List<Floater> floaters = floaterRepository.findByStudentCode(studentCode);
+			Team team = teamRepository.findByName(teamName).orElseThrow();
+			if (!floaters.isEmpty()) {
+				team.addFloater(floaters.get(0));
+				teamRepository.save(team);
+			}
+		} catch (Exception e) {
+			lastException = e; // captura la excepción para Cucumber
+		}
+	}
 
-    @Then("I should receive the error {string}")
-    public void verifyErrorMessage(String expectedMessage) {
-        assertNotNull(lastException, "No exception was captured");
-        boolean found = findMessageInExceptionChain(lastException, expectedMessage);
-        assertTrue(found, "Error message '" + expectedMessage + "' not found. Got: " + lastException.getMessage());
-    }
+	@Then("I should receive the error {string}")
+	public void verifyErrorMessage(String expectedMessage) {
+		assertNotNull(lastException, "No exception was captured");
+		assertTrue(lastException.getMessage().contains(expectedMessage),
+			"Error message '" + expectedMessage + "' not found. Got: " + lastException.getMessage());
+	}
 
     private boolean findMessageInExceptionChain(Throwable exception, String expectedMessage) {
         Throwable current = exception;
