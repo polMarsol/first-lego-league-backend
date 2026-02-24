@@ -149,8 +149,8 @@ public class VolunteerStepDefs {
 
 	@When("I delete the floater with student code {string}")
 	public void deleteFloater(String studentCode) {
-		Optional<Floater> floater = floaterRepository.findByStudentCode(studentCode);
-		floater.ifPresent(floaterRepository::delete);
+		Floater floater = floaterRepository.findByStudentCode(studentCode).orElseThrow();
+		floaterRepository.delete(floater);
 	}
 
 	@Then("the floater with student code {string} should not exist")

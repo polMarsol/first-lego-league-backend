@@ -100,7 +100,7 @@ public class Team extends UriEntity<String> {
 	@ToString.Exclude
 	private Set<Coach> trainedBy = new HashSet<>();
 
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
 	@JoinTable(
 		name = "team_floaters",
 		joinColumns = @JoinColumn(name = "team_name"),
@@ -113,7 +113,7 @@ public class Team extends UriEntity<String> {
 
 	public void addFloater(Floater floater) {
 		if (floaters.contains(floater)) {
-			return;
+			throw new IllegalArgumentException("Floater cannot be null");
 		}
 		if (floaters.size() >= 2) {
 			throw new IllegalStateException("A team cannot have more than 2 floaters");
