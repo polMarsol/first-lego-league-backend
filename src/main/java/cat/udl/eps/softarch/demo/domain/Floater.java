@@ -18,13 +18,6 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Floater extends Volunteer {
 
-	@PreRemove
-	private void removeFromAllTeams() {
-		for (Team team : new HashSet<>(assistedTeams)) {
-			team.getFloaters().remove(this);
-		}
-		assistedTeams.clear();
-	}
 
 	@NotBlank
 	@Column(unique = true)
