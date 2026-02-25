@@ -11,3 +11,4 @@ Code review instructions:
 - Pull requests must include tests for all the new functionality. Test must be well-written using Cucumber, and must not be flaky. Functionality changes and bug fixes must also include the corresponding tests.
 - Disallow modifications to the project dependencies.
 - Clarity, correctness, and maintainability is preferred over cleverness or micro-optimizations.
+- In your code review comments, use `inline code formatting` to refer to code elements. For example: `SomeClass<String>` or `@Annotation`.

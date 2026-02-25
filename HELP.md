@@ -1,10 +1,5 @@
 # Getting Started
 
-### Run API locally
-
-Using your IDE, execute `MainApplication::main`.
-
-If you are using VSCode, you can just press `F5` from anywhere to start debugging.
 
 ### Reference Documentation
 For further reference, please consider the following guides:
