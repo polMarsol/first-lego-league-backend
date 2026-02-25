@@ -57,7 +57,7 @@ public class MatchAssignmentService {
 		}
 
 		boolean hasConflict = matchRepository.existsOverlappingAssignment(
-				referee.getId(),
+				parsedRefereeId,
 				match.getStartTime(),
 				match.getEndTime());
 

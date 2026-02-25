@@ -1,6 +1,7 @@
 package cat.udl.eps.softarch.demo.domain;
 
 import java.time.LocalDateTime;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -34,6 +35,11 @@ public class Match extends UriEntity<Long> {
 	@EqualsAndHashCode.Include
 	private Long id;
 
+	@Override
+	public Long getId() {
+		return id;
+	}
+
 	@NotNull
 	@Column(nullable = false)
 	private LocalDateTime startTime;
@@ -51,6 +57,7 @@ public class Match extends UriEntity<Long> {
 	@JoinColumn(name = "referee_id")
 	private Referee referee;
 
+	@JsonIgnore
 	@AssertTrue(message = "endTime must be after startTime")
 	public boolean isTimeRangeValid() {
 		return startTime == null || endTime == null || endTime.isAfter(startTime);

@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.demo.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,6 +55,7 @@ class MatchAssignmentServiceTest {
 		assertEquals("ASSIGNED", response.status());
 		assertEquals(referee, match.getReferee());
 		verify(matchRepository).findByIdForUpdate(1L);
+		verify(matchRepository, never()).save(any(Match.class));
 	}
 
 	@Test
