@@ -26,7 +26,8 @@ class TeamTest {
 		for (int i = 0; i < 10; i++) {
 			team.addMember(new TeamMember());
 		}
-		assertThrows(IllegalStateException.class, () -> team.addMember(new TeamMember()));
+		TeamMember extraMember = new TeamMember();
+		assertThrows(IllegalStateException.class, () -> team.addMember(extraMember));
 	}
 
 	@Test
