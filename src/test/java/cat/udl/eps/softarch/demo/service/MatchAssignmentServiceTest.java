@@ -54,7 +54,6 @@ class MatchAssignmentServiceTest {
 		assertEquals("ASSIGNED", response.status());
 		assertEquals(referee, match.getReferee());
 		verify(matchRepository).findByIdForUpdate(1L);
-		verify(matchRepository).save(match);
 	}
 
 	@Test
@@ -79,7 +78,6 @@ class MatchAssignmentServiceTest {
 				() -> service.assignReferee("1", "2"));
 
 		assertEquals(AssignmentErrorCode.REFEREE_NOT_FOUND, ex.getErrorCode());
-		verify(matchRepository, never()).save(match);
 	}
 
 	@Test

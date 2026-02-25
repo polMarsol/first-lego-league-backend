@@ -68,7 +68,6 @@ public class MatchAssignmentService {
 		}
 
 		match.setReferee(referee);
-		matchRepository.save(match);
 
 		return new AssignRefereeResponse(matchId, refereeId, "ASSIGNED");
 	}

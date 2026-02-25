@@ -12,6 +12,7 @@ import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -49,4 +50,9 @@ public class Match extends UriEntity<Long> {
 	@ManyToOne
 	@JoinColumn(name = "referee_id")
 	private Referee referee;
+
+	@AssertTrue(message = "endTime must be after startTime")
+	public boolean isTimeRangeValid() {
+		return startTime == null || endTime == null || endTime.isAfter(startTime);
+	}
 }
