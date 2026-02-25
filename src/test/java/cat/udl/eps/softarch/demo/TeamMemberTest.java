@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import cat.udl.eps.softarch.demo.domain.Team; // <--- Afegeix l'import explícit si cal
+import cat.udl.eps.softarch.demo.domain.Team;
 import cat.udl.eps.softarch.demo.domain.TeamMember; 
 
 class TeamMemberTest {
