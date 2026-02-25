@@ -20,7 +20,7 @@ Feature: Match referee assignment
 
 	Scenario: Referee not found
 		Given a match with state "SCHEDULED" exists from "2026-03-01T10:00:00" to "2026-03-01T11:00:00"
-		When I assign referee id "99999" to match id "1"
+		When I assign referee id "99999" to that match
 		Then The response code is 404
 		And assignment error code is "REFEREE_NOT_FOUND"
 

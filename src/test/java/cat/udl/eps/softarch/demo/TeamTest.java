@@ -1,6 +1,7 @@
 package cat.udl.eps.softarch.demo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.LocalDate;
@@ -33,10 +34,14 @@ class TeamTest {
 	@Test
 	@DisplayName("Set inscription date on prePersist when null")
 	void testPrePersistDate() {
+		LocalDate before = LocalDate.now();
 		team.setInscriptionDate(null);
 		team.prePersist();
+		LocalDate after = LocalDate.now();
+
 		assertNotNull(team.getInscriptionDate());
-		assertEquals(LocalDate.now(), team.getInscriptionDate());
+		assertFalse(team.getInscriptionDate().isBefore(before));
+		assertFalse(team.getInscriptionDate().isAfter(after));
 	}
 
 	@Test

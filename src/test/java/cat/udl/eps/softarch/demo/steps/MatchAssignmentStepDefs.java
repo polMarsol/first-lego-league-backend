@@ -1,6 +1,5 @@
 package cat.udl.eps.softarch.demo.steps;
 
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import java.time.LocalDateTime;
@@ -134,6 +133,11 @@ public class MatchAssignmentStepDefs {
 		assign(matchId, refereeId);
 	}
 
+	@When("I assign referee id {string} to that match")
+	public void assignRefereeIdToCurrentMatch(String refereeId) throws Exception {
+		assign(currentMatch.getId().toString(), refereeId);
+	}
+
 	@Then("the assignment response status is {string}")
 	public void verifyAssignmentStatus(String expectedStatus) throws Exception {
 		stepDefs.result.andExpect(jsonPath("$.status").value(expectedStatus));
@@ -150,7 +154,7 @@ public class MatchAssignmentStepDefs {
 		request.put("refereeId", refereeId);
 		stepDefs.result = stepDefs.mockMvc.perform(
 				post("/match-assignments")
-						.with(httpBasic("demo", "password"))
+						.with(AuthenticationStepDefs.authenticate())
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(request.toString())
 						.accept(MediaType.APPLICATION_JSON));
