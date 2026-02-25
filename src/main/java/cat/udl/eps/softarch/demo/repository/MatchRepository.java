@@ -27,6 +27,7 @@ public interface MatchRepository extends CrudRepository<Match, Long>, PagingAndS
 			AND m.startTime < :endTime
 			AND :startTime < m.endTime
 			""")
+	@RestResource(exported = false)
 	boolean existsOverlappingAssignment(
 			@Param("refereeId") Long refereeId,
 			@Param("startTime") LocalDateTime startTime,

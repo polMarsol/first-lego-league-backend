@@ -33,17 +33,6 @@ public class MatchAssignmentService {
 						AssignmentErrorCode.MATCH_NOT_FOUND,
 						"Match " + matchId + " does not exist"));
 
-		Volunteer volunteer = volunteerRepository.findByIdForUpdate(parsedRefereeId).orElseThrow(
-				() -> new AssignmentValidationException(
-						AssignmentErrorCode.REFEREE_NOT_FOUND,
-						"Volunteer " + refereeId + " does not exist"));
-
-		if (!(volunteer instanceof Referee referee)) {
-			throw new AssignmentValidationException(
-					AssignmentErrorCode.INVALID_ROLE,
-					"Volunteer " + refereeId + " is not a referee");
-		}
-
 		if (match.getReferee() != null) {
 			throw new AssignmentValidationException(
 					AssignmentErrorCode.MATCH_ALREADY_HAS_REFEREE,
@@ -54,6 +43,17 @@ public class MatchAssignmentService {
 			throw new AssignmentValidationException(
 					AssignmentErrorCode.INVALID_MATCH_STATE,
 					"Match " + matchId + " is not in an assignable state");
+		}
+
+		Volunteer volunteer = volunteerRepository.findByIdForUpdate(parsedRefereeId).orElseThrow(
+				() -> new AssignmentValidationException(
+						AssignmentErrorCode.REFEREE_NOT_FOUND,
+						"Volunteer " + refereeId + " does not exist"));
+
+		if (!(volunteer instanceof Referee referee)) {
+			throw new AssignmentValidationException(
+					AssignmentErrorCode.INVALID_ROLE,
+					"Volunteer " + refereeId + " is not a referee");
 		}
 
 		boolean hasConflict = matchRepository.existsOverlappingAssignment(

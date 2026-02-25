@@ -102,10 +102,8 @@ class MatchAssignmentServiceTest {
 	void assignRefereeFailsWhenMatchAlreadyHasReferee() {
 		Match match = newScheduledMatch(1L, LocalDateTime.of(2026, 3, 1, 10, 0), LocalDateTime.of(2026, 3, 1, 11, 0));
 		match.setReferee(newReferee(5L));
-		Referee referee = newReferee(2L);
 
 		when(matchRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(match));
-		when(volunteerRepository.findByIdForUpdate(2L)).thenReturn(Optional.of(referee));
 
 		AssignmentValidationException ex = assertThrows(
 				AssignmentValidationException.class,
@@ -118,10 +116,8 @@ class MatchAssignmentServiceTest {
 	void assignRefereeFailsWhenMatchStateIsInvalid() {
 		Match match = newScheduledMatch(1L, LocalDateTime.of(2026, 3, 1, 10, 0), LocalDateTime.of(2026, 3, 1, 11, 0));
 		match.setState(MatchState.FINISHED);
-		Referee referee = newReferee(2L);
 
 		when(matchRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(match));
-		when(volunteerRepository.findByIdForUpdate(2L)).thenReturn(Optional.of(referee));
 
 		AssignmentValidationException ex = assertThrows(
 				AssignmentValidationException.class,
