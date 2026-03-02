@@ -17,6 +17,15 @@ public class CompetitionTable extends UriEntity<String> {
 	@Id
 	private String id;
 
+	public CompetitionTable() {}
+
+	public static CompetitionTable create(String id) {
+		DomainValidation.requireNonBlank(id, "id");
+		CompetitionTable table = new CompetitionTable();
+		table.id = id;
+		return table;
+	}
+
 	@OneToMany(mappedBy = "competitionTable", cascade = CascadeType.ALL)
 	@JsonManagedReference("table-matches")
 	private List<Match> matches = new ArrayList<>();

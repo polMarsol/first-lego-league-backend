@@ -1,7 +1,5 @@
 package cat.udl.eps.softarch.fll.domain;
 
-import java.util.HashSet;
-import java.util.Set;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -12,13 +10,15 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Entity
 @Table(name = "floaters")
 @Getter
 @Setter
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
 public class Floater extends Volunteer {
-
 
 	@NotBlank(message = "Student code is mandatory")
 	@Column(unique = true)
@@ -27,5 +27,17 @@ public class Floater extends Volunteer {
 	@ManyToMany(mappedBy = "floaters")
 	@ToString.Exclude
 	private Set<Team> assistedTeams = new HashSet<>();
+
+	public Floater() {
+	}
+
+	public static Floater create(String name, String emailAddress, String phoneNumber, String studentCode) {
+		DomainValidation.requireNonBlank(studentCode, "studentCode");
+
+		Floater floater = new Floater();
+		floater.initFields(name, emailAddress, phoneNumber);
+		floater.studentCode = studentCode;
+		return floater;
+	}
 }
 

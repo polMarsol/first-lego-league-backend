@@ -12,6 +12,14 @@ import jakarta.persistence.Table;
 @Table(name = "referees")
 public class Referee extends Volunteer {
 
+	public Referee() {}
+
+	public static Referee create(String name, String emailAddress, String phoneNumber) {
+		Referee referee = new Referee();
+		referee.initFields(name, emailAddress, phoneNumber);
+		return referee;
+	}
+
 	private boolean expert;
 
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -37,6 +37,23 @@ public abstract class Volunteer extends UriEntity<Long> {
 
 	@NotBlank(message = "Phone number is mandatory")
 	private String phoneNumber;
+
+	protected Volunteer() {
+	}
+
+	protected void validateFields(String name, String emailAddress, String phoneNumber) {
+		DomainValidation.requireNonBlank(name, "name");
+		DomainValidation.requireValidEmail(emailAddress, "emailAddress");
+		DomainValidation.requireNonBlank(phoneNumber, "phoneNumber");
+	}
+
+	protected void initFields(String name, String emailAddress, String phoneNumber) {
+		validateFields(name, emailAddress, phoneNumber);
+
+		this.name = name;
+		this.emailAddress = emailAddress;
+		this.phoneNumber = phoneNumber;
+	}
 }
 
 

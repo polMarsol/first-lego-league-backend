@@ -23,5 +23,17 @@ public class ScientificProject extends UriEntity<Long> {
 	private Integer score;
 
 	private String comments;
+
+	public ScientificProject() {
+	}
+
+	public static ScientificProject create(Integer score) {
+		DomainValidation.requireNonNull(score, "score");
+		DomainValidation.requireNonNegative(score, "score");
+
+		ScientificProject project = new ScientificProject();
+		project.score = score;
+		return project;
+	}
 }
 
