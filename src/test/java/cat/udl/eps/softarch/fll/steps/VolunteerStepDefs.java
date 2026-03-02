@@ -178,7 +178,7 @@ public class VolunteerStepDefs {
 
 	@Given("a team named {string} from city {string} exists for floater assignment")
 	public void createTeamForFloaterAssignment(String name, String city) {
-		currentTeam = new Team(name);
+		currentTeam = Team.create(name);
 		currentTeam.setCity(city);
 		currentTeam.setFoundationYear(2020);
 		currentTeam.setCategory("Challenge");

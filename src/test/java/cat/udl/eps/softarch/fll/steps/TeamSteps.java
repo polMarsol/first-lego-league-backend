@@ -40,7 +40,7 @@ public class TeamSteps {
 
 	@Given("I create a team named {string} from {string}")
 	public void iCreateATeam(String name, String city) {
-		currentTeam = new Team(name);
+		currentTeam = Team.create(name);
 		currentTeam.setCity(city);
 		currentTeam.setFoundationYear(2000);
 		currentTeam.setCategory("Challenge");
@@ -75,7 +75,7 @@ public class TeamSteps {
 	@When("I try to create an invalid team named {string} from {string}")
 	public void tryCreateInvalid(String name, String city) {
 		try {
-			Team team = new Team(name);
+			Team team = Team.create(name);
 			team.setCity(city);
 			team.setFoundationYear(2000);
 			team.setCategory("Challenge");
@@ -92,7 +92,7 @@ public class TeamSteps {
 
 	@Given("I have a team named {string} with {int} members")
 	public void createTeamWithManyMembers(String name, int count) {
-		currentTeam = new Team(name);
+		currentTeam = Team.create(name);
 		currentTeam.setCity("Igualada");
 		currentTeam.setFoundationYear(2000);
 		currentTeam.setCategory("Challenge");
