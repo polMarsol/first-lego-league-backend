@@ -76,7 +76,7 @@ class MatchScoreRegistrationServiceTest {
 
 		matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore);
 
-		verify(matchResultRepository).saveAll(matchResultCaptor.capture());
+		verify(matchResultRepository).saveAllAndFlush(matchResultCaptor.capture());
 		verify(rankingService).recalculateRanking();
 
 		List<MatchResult> savedResults = matchResultCaptor.getValue();
@@ -96,7 +96,7 @@ class MatchScoreRegistrationServiceTest {
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.MATCH_NOT_FOUND, ex.getErrorCode());
-		verify(matchResultRepository, never()).saveAll(any());
+		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}
 
@@ -110,7 +110,7 @@ class MatchScoreRegistrationServiceTest {
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.INVALID_MATCH_STATE, ex.getErrorCode());
-		verify(matchResultRepository, never()).saveAll(any());
+		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}
 
@@ -124,7 +124,7 @@ class MatchScoreRegistrationServiceTest {
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.MATCH_NOT_FINISHED, ex.getErrorCode());
-		verify(matchResultRepository, never()).saveAll(any());
+		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}
 
@@ -138,7 +138,7 @@ class MatchScoreRegistrationServiceTest {
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.RESULT_ALREADY_EXISTS, ex.getErrorCode());
-		verify(matchResultRepository, never()).saveAll(any());
+		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}
 
@@ -146,7 +146,7 @@ class MatchScoreRegistrationServiceTest {
 	void registerMatchScoreShouldThrowResultAlreadyExistsWhenConcurrentInsertViolatesUniqueConstraint() {
 		when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
 		when(matchResultRepository.existsByMatch(match)).thenReturn(false);
-		when(matchResultRepository.saveAll(any())).thenThrow(new DataIntegrityViolationException("duplicate"));
+		when(matchResultRepository.saveAllAndFlush(any())).thenThrow(new DataIntegrityViolationException("duplicate"));
 
 		MatchScoreRegistrationService.RegistrationException ex = assertThrows(
 				MatchScoreRegistrationService.RegistrationException.class,
@@ -167,7 +167,7 @@ class MatchScoreRegistrationServiceTest {
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.INVALID_SCORE, ex.getErrorCode());
-		verify(matchResultRepository, never()).saveAll(any());
+		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}
 
@@ -180,7 +180,7 @@ class MatchScoreRegistrationServiceTest {
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.INVALID_SCORE, ex.getErrorCode());
-		verify(matchResultRepository, never()).saveAll(any());
+		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}
 
@@ -195,7 +195,7 @@ class MatchScoreRegistrationServiceTest {
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.TEAM_MISMATCH, ex.getErrorCode());
-		verify(matchResultRepository, never()).saveAll(any());
+		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}
 
@@ -210,7 +210,7 @@ class MatchScoreRegistrationServiceTest {
 
 		matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore);
 
-		verify(matchResultRepository).saveAll(matchResultCaptor.capture());
+		verify(matchResultRepository).saveAllAndFlush(matchResultCaptor.capture());
 		List<MatchResult> savedResults = matchResultCaptor.getValue();
 
 		assertEquals(80, savedResults.get(0).getScore());
