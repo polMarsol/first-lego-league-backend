@@ -24,10 +24,10 @@ public class MatchAssignmentService {
 
 	@Transactional
 	public Match assignReferee(String matchId, String refereeId) {
-		Long parsedMatchId = parseIdOrThrow(matchId, MatchAssignmentErrorCode.MATCH_NOT_FOUND, "Match not found");
-		Long parsedRefereeId = parseIdOrThrow(refereeId, MatchAssignmentErrorCode.REFEREE_NOT_FOUND, "Referee not found");
+		Long parsedMatchId = parseIdOrThrow(matchId);
+		Long parsedRefereeId = parseIdOrThrow(refereeId);
 
-		Match match = matchRepository.findById(parsedMatchId)
+		Match match = matchRepository.findByIdForUpdate(parsedMatchId)
 				.orElseThrow(() -> new MatchAssignmentException(
 						MatchAssignmentErrorCode.MATCH_NOT_FOUND, "Match not found: " + matchId));
 
@@ -44,7 +44,7 @@ public class MatchAssignmentService {
 					"Match is not in a valid state for referee assignment");
 		}
 
-		Volunteer volunteer = volunteerRepository.findById(parsedRefereeId)
+		Volunteer volunteer = volunteerRepository.findByIdForUpdate(parsedRefereeId)
 				.orElseThrow(() -> new MatchAssignmentException(
 						MatchAssignmentErrorCode.REFEREE_NOT_FOUND, "Referee not found: " + refereeId));
 
@@ -66,11 +66,12 @@ public class MatchAssignmentService {
 		return matchRepository.save(match);
 	}
 
-	private Long parseIdOrThrow(String value, MatchAssignmentErrorCode errorCode, String notFoundMessage) {
+	private Long parseIdOrThrow(String value) {
 		try {
 			return Long.parseLong(value);
 		} catch (NumberFormatException ex) {
-			throw new MatchAssignmentException(errorCode, notFoundMessage + ": " + value);
+			throw new MatchAssignmentException(
+					MatchAssignmentErrorCode.INVALID_ID_FORMAT, "Invalid ID format: " + value);
 		}
 	}
 }

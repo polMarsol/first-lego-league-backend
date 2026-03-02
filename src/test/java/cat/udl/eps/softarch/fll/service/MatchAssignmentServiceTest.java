@@ -43,8 +43,8 @@ class MatchAssignmentServiceTest {
 		Match match = buildMatch(10L, MatchState.SCHEDULED, null);
 		Referee referee = buildReferee(20L);
 
-		when(matchRepository.findById(10L)).thenReturn(Optional.of(match));
-		when(volunteerRepository.findById(20L)).thenReturn(Optional.of(referee));
+		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
+		when(volunteerRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(referee));
 		when(matchRepository.findByRefereeAndStartTimeLessThanAndEndTimeGreaterThanAndIdNot(
 				referee, match.getEndTime(), match.getStartTime(), match.getId())).thenReturn(List.of());
 		when(matchRepository.save(any(Match.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -57,7 +57,7 @@ class MatchAssignmentServiceTest {
 
 	@Test
 	void assignRefereeFailsWhenMatchNotFound() {
-		when(matchRepository.findById(10L)).thenReturn(Optional.empty());
+		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.empty());
 
 		MatchAssignmentException ex = assertThrows(
 				MatchAssignmentException.class, () -> service.assignReferee("10", "20"));
@@ -68,8 +68,8 @@ class MatchAssignmentServiceTest {
 	@Test
 	void assignRefereeFailsWhenRefereeNotFound() {
 		Match match = buildMatch(10L, MatchState.SCHEDULED, null);
-		when(matchRepository.findById(10L)).thenReturn(Optional.of(match));
-		when(volunteerRepository.findById(20L)).thenReturn(Optional.empty());
+		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
+		when(volunteerRepository.findByIdForUpdate(20L)).thenReturn(Optional.empty());
 
 		MatchAssignmentException ex = assertThrows(
 				MatchAssignmentException.class, () -> service.assignReferee("10", "20"));
@@ -83,8 +83,8 @@ class MatchAssignmentServiceTest {
 		Floater floater = new Floater();
 		floater.setId(20L);
 
-		when(matchRepository.findById(10L)).thenReturn(Optional.of(match));
-		when(volunteerRepository.findById(20L)).thenReturn(Optional.of(floater));
+		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
+		when(volunteerRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(floater));
 
 		MatchAssignmentException ex = assertThrows(
 				MatchAssignmentException.class, () -> service.assignReferee("10", "20"));
@@ -98,8 +98,8 @@ class MatchAssignmentServiceTest {
 		Referee referee = buildReferee(20L);
 		Match overlapping = buildMatch(11L, MatchState.SCHEDULED, referee);
 
-		when(matchRepository.findById(10L)).thenReturn(Optional.of(match));
-		when(volunteerRepository.findById(20L)).thenReturn(Optional.of(referee));
+		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
+		when(volunteerRepository.findByIdForUpdate(20L)).thenReturn(Optional.of(referee));
 		when(matchRepository.findByRefereeAndStartTimeLessThanAndEndTimeGreaterThanAndIdNot(
 				referee, match.getEndTime(), match.getStartTime(), match.getId())).thenReturn(List.of(overlapping));
 
@@ -114,7 +114,7 @@ class MatchAssignmentServiceTest {
 		Referee assigned = buildReferee(99L);
 		Match match = buildMatch(10L, MatchState.SCHEDULED, assigned);
 
-		when(matchRepository.findById(10L)).thenReturn(Optional.of(match));
+		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
 
 		MatchAssignmentException ex = assertThrows(
 				MatchAssignmentException.class, () -> service.assignReferee("10", "20"));
@@ -125,12 +125,20 @@ class MatchAssignmentServiceTest {
 	@Test
 	void assignRefereeFailsWhenMatchStateIsInvalid() {
 		Match match = buildMatch(10L, MatchState.FINISHED, null);
-		when(matchRepository.findById(10L)).thenReturn(Optional.of(match));
+		when(matchRepository.findByIdForUpdate(10L)).thenReturn(Optional.of(match));
 
 		MatchAssignmentException ex = assertThrows(
 				MatchAssignmentException.class, () -> service.assignReferee("10", "20"));
 
 		assertEquals(MatchAssignmentErrorCode.INVALID_MATCH_STATE, ex.getErrorCode());
+	}
+
+	@Test
+	void assignRefereeFailsWhenMatchIdIsInvalidFormat() {
+		MatchAssignmentException ex = assertThrows(
+				MatchAssignmentException.class, () -> service.assignReferee("abc", "20"));
+
+		assertEquals(MatchAssignmentErrorCode.INVALID_ID_FORMAT, ex.getErrorCode());
 	}
 
 	private Match buildMatch(Long id, MatchState state, Referee referee) {
@@ -149,3 +157,4 @@ class MatchAssignmentServiceTest {
 		return referee;
 	}
 }
+

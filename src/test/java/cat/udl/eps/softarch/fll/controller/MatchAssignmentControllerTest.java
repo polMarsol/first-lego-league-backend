@@ -65,7 +65,7 @@ class MatchAssignmentControllerTest {
 		mockMvc.perform(post("/matchAssignments/assign")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content("{\"matchId\":\"1\",\"refereeId\":\"2\"}"))
-				.andExpect(status().isBadRequest())
+				.andExpect(status().isConflict())
 				.andExpect(jsonPath("$.error").value("AVAILABILITY_CONFLICT"))
 				.andExpect(jsonPath("$.message")
 						.value("Referee is already assigned to another overlapping match"));
