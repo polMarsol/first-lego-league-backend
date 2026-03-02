@@ -18,6 +18,7 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DataIntegrityViolationException;
 import cat.udl.eps.softarch.fll.domain.Match;
 import cat.udl.eps.softarch.fll.domain.MatchResult;
 import cat.udl.eps.softarch.fll.domain.Team;
@@ -138,6 +139,20 @@ class MatchScoreRegistrationServiceTest {
 
 		assertEquals(MatchScoreRegistrationService.ErrorCode.RESULT_ALREADY_EXISTS, ex.getErrorCode());
 		verify(matchResultRepository, never()).saveAll(any());
+		verify(rankingService, never()).recalculateRanking();
+	}
+
+	@Test
+	void registerMatchScoreShouldThrowResultAlreadyExistsWhenConcurrentInsertViolatesUniqueConstraint() {
+		when(matchRepository.findById(1L)).thenReturn(Optional.of(match));
+		when(matchResultRepository.existsByMatch(match)).thenReturn(false);
+		when(matchResultRepository.saveAll(any())).thenThrow(new DataIntegrityViolationException("duplicate"));
+
+		MatchScoreRegistrationService.RegistrationException ex = assertThrows(
+				MatchScoreRegistrationService.RegistrationException.class,
+				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
+
+		assertEquals(MatchScoreRegistrationService.ErrorCode.RESULT_ALREADY_EXISTS, ex.getErrorCode());
 		verify(rankingService, never()).recalculateRanking();
 	}
 

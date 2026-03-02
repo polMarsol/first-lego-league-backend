@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.fll.service;
 
 import java.util.List;
 import java.util.Map;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +57,13 @@ public class MatchScoreRegistrationService {
 				buildMatchResult(match, matchTeamA, scoreByTeam.get(matchTeamA.getId())),
 				buildMatchResult(match, matchTeamB, scoreByTeam.get(matchTeamB.getId())));
 
-		matchResultRepository.saveAll(matchResults);
+		try {
+			matchResultRepository.saveAll(matchResults);
+		} catch (DataIntegrityViolationException exception) {
+			throw new RegistrationException(
+					ErrorCode.RESULT_ALREADY_EXISTS,
+					"A result has already been registered for this match");
+		}
 		rankingService.recalculateRanking();
 	}
 
