@@ -52,7 +52,7 @@ public final class DomainValidation {
 		if (value == null) {
 			throw new DomainValidationException(fieldName + " must not be null");
 		}
-		if (value.toEpochDay() > LocalDate.now().toEpochDay()) {
+		if (!value.isBefore(LocalDate.now())) {
 			throw new DomainValidationException(fieldName + " must be in the past");
 		}
 	}

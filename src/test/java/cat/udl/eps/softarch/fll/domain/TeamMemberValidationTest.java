@@ -2,9 +2,7 @@ package cat.udl.eps.softarch.fll.domain;
 
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
 import java.time.LocalDate;
-
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -20,7 +18,7 @@ class TeamMemberValidationTest {
 	@Test
 	void futureDateThrows() {
 		assertThrows(DomainValidationException.class,
-			() -> TeamMember.create(null, "Player", LocalDate.now().plusDays(1), validTeam));
+			() -> TeamMember.create("Alice", "Player", LocalDate.now().plusDays(1), validTeam));
 	}
 
 	@Nested

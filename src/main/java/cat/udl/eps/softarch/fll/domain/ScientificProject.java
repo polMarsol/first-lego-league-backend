@@ -24,9 +24,6 @@ public class ScientificProject extends UriEntity<Long> {
 
 	private String comments;
 
-	public ScientificProject() {
-	}
-
 	public static ScientificProject create(Integer score) {
 		DomainValidation.requireNonNegative(score, "score");
 

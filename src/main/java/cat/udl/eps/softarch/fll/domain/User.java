@@ -38,9 +38,6 @@ public class User extends UriEntity<String> implements UserDetails {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private boolean passwordReset;
 
-	public User() {
-	}
-
 	public static User create(String id, String email, String password) {
 		DomainValidation.requireNonBlank(id, "id");
 		DomainValidation.requireValidEmail(email, "email");
