@@ -3,6 +3,8 @@ package cat.udl.eps.softarch.fll.domain;
 import java.time.LocalTime;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -32,6 +34,13 @@ public class Match extends UriEntity<Long> {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "table_id")
 	private CompetitionTable competitionTable;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "referee_id")
+	private Referee referee;
+
+	@Enumerated(EnumType.STRING)
+	private MatchState state = MatchState.SCHEDULED;
 
 	public Match() {}
 
@@ -74,5 +83,21 @@ public class Match extends UriEntity<Long> {
 
 	public void setCompetitionTable(CompetitionTable competitionTable) {
 		this.competitionTable = competitionTable;
+	}
+
+	public Referee getReferee() {
+		return referee;
+	}
+
+	public void setReferee(Referee referee) {
+		this.referee = referee;
+	}
+
+	public MatchState getState() {
+		return state;
+	}
+
+	public void setState(MatchState state) {
+		this.state = state;
 	}
 }

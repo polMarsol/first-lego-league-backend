@@ -1,0 +1,11 @@
+package cat.udl.eps.softarch.fll.exception;
+
+public enum MatchAssignmentErrorCode {
+	MATCH_NOT_FOUND,
+	REFEREE_NOT_FOUND,
+	INVALID_ROLE,
+	AVAILABILITY_CONFLICT,
+	MATCH_ALREADY_HAS_REFEREE,
+	INVALID_MATCH_STATE,
+	INVALID_ID_FORMAT
+}
