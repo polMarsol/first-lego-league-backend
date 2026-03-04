@@ -34,7 +34,7 @@ public class Match extends UriEntity<Long> {
 	private LocalTime endTime;
 
 	@Enumerated(EnumType.STRING)
-	private String state;
+	private MatchState state;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "referee_id")
