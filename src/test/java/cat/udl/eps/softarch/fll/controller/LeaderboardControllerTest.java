@@ -1,6 +1,7 @@
 package cat.udl.eps.softarch.fll.controller;
 
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -13,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+import org.springframework.validation.beanvalidation.MethodValidationPostProcessor;
 import org.springframework.web.server.ResponseStatusException;
 import cat.udl.eps.softarch.fll.controller.dto.LeaderboardItemResponse;
 import cat.udl.eps.softarch.fll.controller.dto.LeaderboardPageResponse;
@@ -29,7 +31,12 @@ class LeaderboardControllerTest {
 		LeaderboardController controller = new LeaderboardController(leaderboardService);
 		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
 		validator.afterPropertiesSet();
-		mockMvc = MockMvcBuilders.standaloneSetup(controller)
+		MethodValidationPostProcessor methodValidationPostProcessor = new MethodValidationPostProcessor();
+		methodValidationPostProcessor.setValidator(validator);
+		methodValidationPostProcessor.afterPropertiesSet();
+		Object proxiedController = methodValidationPostProcessor.postProcessAfterInitialization(
+				controller, "leaderboardController");
+		mockMvc = MockMvcBuilders.standaloneSetup(proxiedController)
 				.setValidator(validator)
 				.build();
 	}
@@ -91,6 +98,17 @@ class LeaderboardControllerTest {
 				.andExpect(jsonPath("$.items.length()").value(1))
 				.andExpect(jsonPath("$.items[0].position").value(2))
 				.andExpect(jsonPath("$.items[0].teamName").value("TeamB"));
+	}
+
+	@Test
+	void getEditionLeaderboardReturnsBadRequestForInvalidPagination() throws Exception {
+		mockMvc.perform(get("/leaderboards/editions/2025")
+				.param("page", "-1")
+				.param("size", "0")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(status().isBadRequest());
+
+		verifyNoInteractions(leaderboardService);
 	}
 
 }
