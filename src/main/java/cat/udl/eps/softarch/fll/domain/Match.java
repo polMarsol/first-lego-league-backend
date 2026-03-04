@@ -31,6 +31,20 @@ public class Match extends UriEntity<Long> {
 	private LocalTime startTime;
 	private LocalTime endTime;
 
+	private String state;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "referee_id")
+	private Referee referee;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "team_a_id")
+	private Team teamA;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "team_b_id")
+	private Team teamB;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "round_id")
 	@JsonBackReference("round-matches")
