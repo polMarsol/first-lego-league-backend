@@ -2,6 +2,7 @@ package cat.udl.eps.softarch.fll.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,6 +33,7 @@ public class Round extends UriEntity<Long> {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "edition_id")
+	@JsonIdentityReference(alwaysAsId = true)
 	private Edition edition;
 
 	public Round() {}

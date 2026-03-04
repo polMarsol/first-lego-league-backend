@@ -29,6 +29,11 @@ public class LeaderboardService {
 					HttpStatus.BAD_REQUEST,
 					"Invalid pagination: page must be >= 0 and size must be between 1 and 100");
 		}
+		if (page > Integer.MAX_VALUE / size) {
+			throw new ResponseStatusException(
+					HttpStatus.BAD_REQUEST,
+					"Invalid pagination: page and size are too large");
+		}
 
 		if (!editionRepository.existsById(editionId)) {
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Edition not found: " + editionId);

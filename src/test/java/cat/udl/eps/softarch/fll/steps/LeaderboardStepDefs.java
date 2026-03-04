@@ -92,6 +92,22 @@ public class LeaderboardStepDefs {
 		createRoundForEdition(edition);
 	}
 
+	@Given("an edition with tie on score and matches played exists")
+	public void anEditionWithTieOnScoreAndMatchesPlayedExists() {
+		teamNameByAlias.clear();
+		Edition edition = createEdition();
+		Round round = createRoundForEdition(edition);
+
+		Team teamAlpha = createTeam("TeamAlpha");
+		Team teamBeta = createTeam("TeamBeta");
+
+		createResult(round, teamAlpha, 60);
+		createResult(round, teamAlpha, 40);
+
+		createResult(round, teamBeta, 50);
+		createResult(round, teamBeta, 50);
+	}
+
 	@When("I request leaderboard for that edition with page {int} and size {int}")
 	public void iRequestLeaderboardForThatEditionWithPagination(int page, int size) throws Exception {
 		stepDefs.result = stepDefs.mockMvc.perform(get("/leaderboards/editions/" + currentEditionId)

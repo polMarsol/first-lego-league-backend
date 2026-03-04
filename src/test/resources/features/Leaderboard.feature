@@ -20,6 +20,13 @@ Feature: Edition leaderboard retrieval
     And leaderboard item at index 0 should have team "TeamAlpha"
     And leaderboard item at index 1 should have team "TeamBeta"
 
+  Scenario: Full tie is resolved by team name ascending
+    Given an edition with tie on score and matches played exists
+    When I request leaderboard for that edition with page 0 and size 10
+    Then The response code is 200
+    And leaderboard item at index 0 should have team "TeamAlpha"
+    And leaderboard item at index 1 should have team "TeamBeta"
+
   Scenario: Retrieve leaderboard for empty edition
     Given an empty edition exists
     When I request leaderboard for that edition with page 0 and size 10
@@ -38,3 +45,8 @@ Feature: Edition leaderboard retrieval
     And leaderboard should contain 1 item
     And leaderboard item at index 0 should have team "TeamB"
     And leaderboard item at index 0 should have position 2
+
+  Scenario: Invalid pagination returns bad request
+    Given an edition with leaderboard data exists
+    When I request leaderboard for that edition with page 0 and size 0
+    Then The response code is 400

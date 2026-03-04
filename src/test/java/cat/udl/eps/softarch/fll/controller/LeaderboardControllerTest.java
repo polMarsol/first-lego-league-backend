@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.server.ResponseStatusException;
 import cat.udl.eps.softarch.fll.controller.dto.LeaderboardItemResponse;
 import cat.udl.eps.softarch.fll.controller.dto.LeaderboardPageResponse;
@@ -26,7 +27,11 @@ class LeaderboardControllerTest {
 	void setUp() {
 		leaderboardService = mock(LeaderboardService.class);
 		LeaderboardController controller = new LeaderboardController(leaderboardService);
-		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+		LocalValidatorFactoryBean validator = new LocalValidatorFactoryBean();
+		validator.afterPropertiesSet();
+		mockMvc = MockMvcBuilders.standaloneSetup(controller)
+				.setValidator(validator)
+				.build();
 	}
 
 	@Test
