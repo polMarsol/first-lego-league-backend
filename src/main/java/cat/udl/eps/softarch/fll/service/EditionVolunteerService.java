@@ -1,7 +1,6 @@
 package cat.udl.eps.softarch.fll.service;
 
 import java.util.NoSuchElementException;
-import java.util.stream.StreamSupport;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cat.udl.eps.softarch.fll.controller.dto.EditionVolunteersResponse;
@@ -28,13 +27,13 @@ public class EditionVolunteerService {
 			throw new NoSuchElementException("EDITION_NOT_FOUND");
 		}
 
-		var referees = StreamSupport.stream(refereeRepository.findAll().spliterator(), false)
+		var referees = refereeRepository.findByEditionId(editionId).stream()
 				.map(this::toSummary)
 				.toList();
-		var judges = judgeRepository.findAll().stream()
+		var judges = judgeRepository.findByEditionId(editionId).stream()
 				.map(this::toSummary)
 				.toList();
-		var floaters = StreamSupport.stream(floaterRepository.findAll().spliterator(), false)
+		var floaters = floaterRepository.findByEditionId(editionId).stream()
 				.map(this::toSummary)
 				.toList();
 

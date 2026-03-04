@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @RepositoryRestResource
 public interface FloaterRepository extends CrudRepository<Floater, Long>, PagingAndSortingRepository<Floater, Long> {
 
+	List<Floater> findAll();
 
 	@Operation(summary = "Find floater by student code",
 			description = "Returns the Floater with the specified student code.")
@@ -22,5 +23,6 @@ public interface FloaterRepository extends CrudRepository<Floater, Long>, Paging
 	@Operation(summary = "Search floaters by name",
 			description = "Returns a list of Floaters whose names contain the specified text.")
 	List<Floater> findByNameContainingIgnoreCase(@Param("text") String text);
-}
 
+	List<Floater> findByEditionId(Long editionId);
+}

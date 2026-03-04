@@ -2,6 +2,8 @@ package cat.udl.eps.softarch.fll.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -59,9 +61,9 @@ class EditionVolunteerServiceTest {
 		floater.setStudentCode("STU-1");
 
 		when(editionRepository.existsById(10L)).thenReturn(true);
-		when(refereeRepository.findAll()).thenReturn(List.of(referee));
-		when(judgeRepository.findAll()).thenReturn(List.of(judge));
-		when(floaterRepository.findAll()).thenReturn(List.of(floater));
+		when(refereeRepository.findByEditionId(10L)).thenReturn(List.of(referee));
+		when(judgeRepository.findByEditionId(10L)).thenReturn(List.of(judge));
+		when(floaterRepository.findByEditionId(10L)).thenReturn(List.of(floater));
 
 		EditionVolunteersResponse response = editionVolunteerService.getVolunteersGroupedByType(10L);
 
@@ -77,14 +79,17 @@ class EditionVolunteerServiceTest {
 		assertEquals(1, response.floaters().size());
 		assertEquals(3L, response.floaters().get(0).id());
 		assertEquals("Floater One", response.floaters().get(0).name());
+		verify(refereeRepository).findByEditionId(10L);
+		verify(judgeRepository).findByEditionId(10L);
+		verify(floaterRepository).findByEditionId(10L);
 	}
 
 	@Test
 	void getVolunteersGroupedByTypeReturnsEmptyListsWhenNoVolunteersExist() {
 		when(editionRepository.existsById(10L)).thenReturn(true);
-		when(refereeRepository.findAll()).thenReturn(List.of());
-		when(judgeRepository.findAll()).thenReturn(List.of());
-		when(floaterRepository.findAll()).thenReturn(List.of());
+		when(refereeRepository.findByEditionId(10L)).thenReturn(List.of());
+		when(judgeRepository.findByEditionId(10L)).thenReturn(List.of());
+		when(floaterRepository.findByEditionId(10L)).thenReturn(List.of());
 
 		EditionVolunteersResponse response = editionVolunteerService.getVolunteersGroupedByType(10L);
 
@@ -102,5 +107,6 @@ class EditionVolunteerServiceTest {
 				() -> editionVolunteerService.getVolunteersGroupedByType(99L));
 
 		assertEquals("EDITION_NOT_FOUND", exception.getMessage());
+		verifyNoInteractions(refereeRepository, judgeRepository, floaterRepository);
 	}
 }
