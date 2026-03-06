@@ -2,9 +2,7 @@ package cat.udl.eps.softarch.fll.service;
 
 import java.time.LocalTime;
 import java.util.List;
-
 import org.springframework.stereotype.Service;
-
 import cat.udl.eps.softarch.fll.domain.Match;
 import cat.udl.eps.softarch.fll.exception.MatchScheduleErrorCode;
 import cat.udl.eps.softarch.fll.exception.MatchScheduleException;

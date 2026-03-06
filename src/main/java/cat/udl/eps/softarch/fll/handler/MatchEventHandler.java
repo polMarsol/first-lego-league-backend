@@ -4,7 +4,6 @@ import org.springframework.data.rest.core.annotation.HandleBeforeCreate;
 import org.springframework.data.rest.core.annotation.HandleBeforeSave;
 import org.springframework.data.rest.core.annotation.RepositoryEventHandler;
 import org.springframework.stereotype.Component;
-
 import cat.udl.eps.softarch.fll.domain.Match;
 import cat.udl.eps.softarch.fll.service.MatchScheduleValidationService;
 
