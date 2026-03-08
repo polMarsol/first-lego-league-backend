@@ -4,11 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-
 import java.time.LocalTime;
-
 import org.springframework.http.MediaType;
-
 import cat.udl.eps.softarch.fll.domain.CompetitionTable;
 import cat.udl.eps.softarch.fll.domain.Match;
 import cat.udl.eps.softarch.fll.domain.Round;
@@ -125,6 +122,6 @@ public class MatchSearchStepDefs {
 	@Then("the error code should be \"INVALID_TIME_FILTER_RANGE\"")
 	public void theErrorCodeShouldBeInvalidTimeFilterRange() throws Exception {
 			stepDefs.result.andExpect(status().isUnprocessableEntity());
-		stepDefs.result.andExpect(jsonPath("$.error").value("INVALID_TIME_FILTER_RANGE"));
+		stepDefs.result.andExpect(jsonPath("$.errorCode").value("INVALID_TIME_FILTER_RANGE"));
 	}
 }
