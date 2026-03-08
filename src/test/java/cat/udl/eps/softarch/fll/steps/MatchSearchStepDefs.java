@@ -4,6 +4,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+
 import java.time.LocalTime;
 import org.springframework.http.MediaType;
 import cat.udl.eps.softarch.fll.domain.CompetitionTable;
@@ -12,6 +13,7 @@ import cat.udl.eps.softarch.fll.domain.Round;
 import cat.udl.eps.softarch.fll.repository.MatchRepository;
 import cat.udl.eps.softarch.fll.repository.RoundRepository;
 import cat.udl.eps.softarch.fll.repository.CompetitionTableRepository;
+
 import io.cucumber.java.Before;
 import io.cucumber.java.en.*;
 
@@ -72,7 +74,7 @@ public class MatchSearchStepDefs {
 	@When("I search matches with no filters")
 	public void iSearchMatchesWithNoFilters() throws Exception {
 		stepDefs.result = stepDefs.mockMvc.perform(
-			get("/matches/search")
+			get("/matches/filter")
 				.with(user("admin"))
 				.contentType(MediaType.APPLICATION_JSON)
 		);
@@ -81,7 +83,7 @@ public class MatchSearchStepDefs {
 	@When("I search matches with table {string} and round {int}")
 	public void iSearchMatchesWithTableAndRound(String tableId, Integer roundNumber) throws Exception {
 		stepDefs.result = stepDefs.mockMvc.perform(
-			get("/matches/search")
+			get("/matches/filter")
 				.param("tableId", tableId)
 				.param("roundId", String.valueOf(currentRoundId))
 				.with(user("admin"))
@@ -92,7 +94,7 @@ public class MatchSearchStepDefs {
 	@When("I search matches between {string} and {string}")
 	public void iSearchMatchesBetween(String start, String end) throws Exception {
 		stepDefs.result = stepDefs.mockMvc.perform(
-			get("/matches/search")
+			get("/matches/filter")
 				.param("startFrom", start)
 				.param("endTo", end)
 				.with(user("admin"))
@@ -103,7 +105,7 @@ public class MatchSearchStepDefs {
 	@When("I search matches with table {string} between {string} and {string}")
 	public void iSearchMatchesWithTableBetween(String tableId, String start, String end) throws Exception {
 		stepDefs.result = stepDefs.mockMvc.perform(
-			get("/matches/search")
+			get("/matches/filter")
 				.param("tableId", tableId)
 				.param("startFrom", start)
 				.param("endTo", end)
@@ -118,13 +120,16 @@ public class MatchSearchStepDefs {
 	}
 
 	@Then("the response should contain matches")
-	public void theResponseShouldContainMatches() throws Exception {
+	public void the_response_should_contain_matches() throws Exception {
+		stepDefs.result.andExpect(jsonPath("$.page").exists());
+		stepDefs.result.andExpect(jsonPath("$.size").exists());
+		stepDefs.result.andExpect(jsonPath("$.totalElements").exists());
 		stepDefs.result.andExpect(jsonPath("$.items").isArray());
 	}
 
 	@Then("the error code should be \"INVALID_TIME_FILTER_RANGE\"")
 	public void theErrorCodeShouldBeInvalidTimeFilterRange() throws Exception {
-			stepDefs.result.andExpect(status().isUnprocessableEntity());
+		stepDefs.result.andExpect(status().isUnprocessableEntity());
 		stepDefs.result.andExpect(jsonPath("$.errorCode").value("INVALID_TIME_FILTER_RANGE"));
 	}
 }
