@@ -45,9 +45,6 @@ public class DomainValidationExceptionHandler {
 	}
 
 	private boolean isInvalidReference(HttpMessageNotReadableException exception, Class<?> targetType, String fieldName) {
-		if (!containsScientificProjectContext(exception)) {
-			return false;
-		}
 		Throwable current = exception;
 		while (current != null) {
 			if (current instanceof InvalidFormatException invalidFormatException) {
@@ -63,18 +60,6 @@ public class DomainValidationExceptionHandler {
 			}
 			String message = current.getMessage();
 			if (message != null && message.contains("ScientificProject") && message.contains(fieldName)) {
-				return true;
-			}
-			current = current.getCause();
-		}
-		return false;
-	}
-
-	private boolean containsScientificProjectContext(Throwable throwable) {
-		Throwable current = throwable;
-		while (current != null) {
-			String message = current.getMessage();
-			if (message != null && message.contains("ScientificProject")) {
 				return true;
 			}
 			current = current.getCause();
