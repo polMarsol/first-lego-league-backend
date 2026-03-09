@@ -86,6 +86,18 @@ class EditionLifecycleServiceTest {
 	}
 
 	@Test
+	void changeStateShouldRejectClosedToDraft() {
+		edition.setState(EditionState.CLOSED);
+		when(editionRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(edition));
+
+		EditionLifecycleException ex = assertThrows(
+				EditionLifecycleException.class,
+				() -> editionLifecycleService.changeState(1L, EditionState.DRAFT));
+
+		assertEquals("INVALID_EDITION_STATE_TRANSITION", ex.getError());
+	}
+
+	@Test
 	void changeStateShouldRejectSameStateTransition() {
 		when(editionRepository.findByIdForUpdate(1L)).thenReturn(Optional.of(edition));
 
@@ -129,6 +141,17 @@ class EditionLifecycleServiceTest {
 
 	@Test
 	void assertOperationAllowedShouldRejectTeamRegistrationWhenDraft() {
+		EditionLifecycleException ex = assertThrows(
+				EditionLifecycleException.class,
+				() -> editionLifecycleService.assertOperationAllowed(edition, EditionOperation.TEAM_REGISTRATION));
+
+		assertEquals("EDITION_OPERATION_NOT_ALLOWED", ex.getError());
+	}
+
+	@Test
+	void assertOperationAllowedShouldRejectTeamRegistrationWhenClosed() {
+		edition.setState(EditionState.CLOSED);
+
 		EditionLifecycleException ex = assertThrows(
 				EditionLifecycleException.class,
 				() -> editionLifecycleService.assertOperationAllowed(edition, EditionOperation.TEAM_REGISTRATION));

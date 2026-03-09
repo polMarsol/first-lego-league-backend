@@ -40,9 +40,8 @@ public class Edition extends UriEntity<Long> {
 	@NotBlank
 	private String description;
 
-	@NotNull
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false)
+	@Column
 	@JsonProperty(access = JsonProperty.Access.READ_ONLY)
 	private EditionState state = EditionState.DRAFT;
 
