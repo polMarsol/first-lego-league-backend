@@ -1,5 +1,6 @@
 package cat.udl.eps.softarch.fll.steps;
 
+import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -9,6 +10,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import com.fasterxml.jackson.databind.JsonNode;
 import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 import org.springframework.http.MediaType;
@@ -114,6 +116,30 @@ public class ManageVenueStepDefs {
 	@And("^No venue with name \"([^\"]*)\" exists$")
 	public void noVenueWithNameExists(String name) {
 		assertFalse(venueRepository.findByName(name).isPresent());
+	}
+
+	@When("^I search venues by city \"([^\"]*)\"$")
+	public void iSearchVenuesByCity(String city) throws Exception {
+		stepDefs.result = stepDefs.mockMvc.perform(
+				get("/venues/search/findByCity")
+						.param("city", city)
+						.accept(MediaType.APPLICATION_JSON)
+						.with(AuthenticationStepDefs.authenticate()))
+				.andDo(print());
+	}
+
+	@And("^The venue search response should contain (\\d+) venues?$")
+	public void theVenueSearchResponseShouldContainCount(int expectedCount) throws Exception {
+		String responseBody = stepDefs.result.andReturn().getResponse().getContentAsString();
+		JsonNode root = stepDefs.mapper.readTree(responseBody);
+		JsonNode venues = root.path("_embedded").path("venues");
+		int actualCount = venues.isArray() ? venues.size() : 0;
+		assertEquals(expectedCount, actualCount);
+	}
+
+	@And("^The venue search response should include venue named \"([^\"]*)\"$")
+	public void theVenueSearchResponseShouldIncludeVenueNamed(String name) throws Exception {
+		stepDefs.result.andExpect(jsonPath("$._embedded.venues[*].name", hasItem(name)));
 	}
 
 	private Venue findVenueByName(String name) {
