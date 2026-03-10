@@ -101,6 +101,7 @@ public class AssignCoachStepDefs {
 	@Then("the error {word} is returned")
 	public void errorReturned(String error) throws Exception {
 		int expectedStatus = switch (error) {
+			case "TEAM_NOT_FOUND", "COACH_NOT_FOUND" -> 404;
 			case "COACH_ALREADY_ASSIGNED",
 				"MAX_COACHES_PER_TEAM_REACHED",
 				"MAX_TEAMS_PER_COACH_REACHED" -> 409;
@@ -108,6 +109,9 @@ public class AssignCoachStepDefs {
 		};
 
 		stepDefs.result.andExpect(status().is(expectedStatus))
-			.andExpect(jsonPath("$.error").value(error));
+			.andExpect(jsonPath("$.error").value(error))
+			.andExpect(jsonPath("$.message").exists())
+			.andExpect(jsonPath("$.timestamp").exists())
+			.andExpect(jsonPath("$.path").value("/teams/assign-coach"));
 	}
 }

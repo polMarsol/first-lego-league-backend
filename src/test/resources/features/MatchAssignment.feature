@@ -60,7 +60,7 @@ Feature: Match referee assignment
 
 	Scenario: Invalid ID format
 		When I assign referee id "abc" to match id "xyz"
-		Then The response code is 422
+		Then The response code is 400
 		And assignment error code is "INVALID_ID_FORMAT"
 
 	Scenario: Batch assignment succeeds for a round

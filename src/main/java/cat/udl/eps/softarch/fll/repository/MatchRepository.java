@@ -68,4 +68,16 @@ public interface MatchRepository extends
 			@Param("newStartTime") LocalTime newStartTime,
 			@Param("newEndTime") LocalTime newEndTime,
 			@Param("currentMatchId") Long currentMatchId);
+
+	@Query("""
+			SELECT m FROM Match m
+			JOIN FETCH m.competitionTable competitionTable
+			JOIN m.round round
+			WHERE round.edition.id = :editionId
+			AND m.competitionTable IS NOT NULL
+			AND m.state = cat.udl.eps.softarch.fll.domain.MatchState.SCHEDULED
+			ORDER BY competitionTable.id, m.startTime, m.id
+			""")
+	@RestResource(exported = false)
+	List<Match> findScheduledTableMatchesByEditionId(@Param("editionId") Long editionId);
 }

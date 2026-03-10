@@ -70,7 +70,7 @@ public class MatchScoreRegistrationService {
 	private void validateRequestShape(Long matchId, String teamAId, String teamBId, Integer teamAScore, Integer teamBScore) {
 		if (matchId == null || teamAId == null || teamBId == null || teamAScore == null || teamBScore == null) {
 			throw new RegistrationException(
-					ErrorCode.INVALID_SCORE,
+					ErrorCode.INVALID_SCORE_PAYLOAD,
 					"Invalid score payload");
 		}
 	}
@@ -152,11 +152,12 @@ public class MatchScoreRegistrationService {
 
 	public enum ErrorCode {
 		MATCH_NOT_FOUND(HttpStatus.NOT_FOUND),
-		INVALID_MATCH_STATE(HttpStatus.BAD_REQUEST),
-		MATCH_NOT_FINISHED(HttpStatus.BAD_REQUEST),
-		RESULT_ALREADY_EXISTS(HttpStatus.BAD_REQUEST),
-		INVALID_SCORE(HttpStatus.BAD_REQUEST),
-		TEAM_MISMATCH(HttpStatus.BAD_REQUEST);
+		INVALID_SCORE_PAYLOAD(HttpStatus.BAD_REQUEST),
+		INVALID_MATCH_STATE(HttpStatus.CONFLICT),
+		MATCH_NOT_FINISHED(HttpStatus.CONFLICT),
+		RESULT_ALREADY_EXISTS(HttpStatus.CONFLICT),
+		INVALID_SCORE(HttpStatus.UNPROCESSABLE_ENTITY),
+		TEAM_MISMATCH(HttpStatus.UNPROCESSABLE_ENTITY);
 
 		private final HttpStatus status;
 

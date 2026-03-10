@@ -31,7 +31,7 @@ public class ProjectRoomAssignmentService {
 		try {
 			judgeId = Long.valueOf(request.judgeId());
 		} catch (NumberFormatException ex) {
-			throw new RoomAssignmentException("JUDGE_NOT_FOUND", "Invalid judge ID format");
+			throw new RoomAssignmentException("INVALID_JUDGE_ID_FORMAT", "Invalid judge ID format");
 		}
 
 		Judge judge = judgeRepository.findById(judgeId)

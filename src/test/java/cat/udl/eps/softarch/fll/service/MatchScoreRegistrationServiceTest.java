@@ -179,7 +179,7 @@ class MatchScoreRegistrationServiceTest {
 				MatchScoreRegistrationService.RegistrationException.class,
 				() -> matchScoreRegistrationService.registerMatchScore(matchId, teamAId, teamBId, teamAScore, teamBScore));
 
-		assertEquals(MatchScoreRegistrationService.ErrorCode.INVALID_SCORE, ex.getErrorCode());
+		assertEquals(MatchScoreRegistrationService.ErrorCode.INVALID_SCORE_PAYLOAD, ex.getErrorCode());
 		verify(matchResultRepository, never()).saveAllAndFlush(any());
 		verify(rankingService, never()).recalculateRanking();
 	}

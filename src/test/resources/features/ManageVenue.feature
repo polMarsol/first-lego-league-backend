@@ -33,3 +33,21 @@ Feature: Manage Venue
         When I delete the venue with name "Delete Venue"
         Then The response code is 204
         And No venue with name "Delete Venue" exists
+
+    Scenario: Search venues by city returns matching results
+        Given I login as "demo" with password "password"
+        And There are no venues with city "UniqueCitySearchVille"
+        And There is no venue with name "City Search Venue"
+        And There is a venue with name "City Search Venue" and city "UniqueCitySearchVille"
+        When I search venues by city "UniqueCitySearchVille"
+        Then The response code is 200
+        And The venue search response should contain 1 venue
+        And The venue search response should include venue named "City Search Venue"
+        And Each venue in the search response has name, city and self link
+
+    Scenario: Search venues by city returns empty list when no match
+        Given I login as "demo" with password "password"
+        When I search venues by city "ZzNonExistentCityForVenueSearch"
+        Then The response code is 200
+        And The venue search response should contain 0 venues
+

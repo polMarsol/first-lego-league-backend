@@ -82,17 +82,17 @@ public class ProjectRoomSteps {
 		Long realId = judgeIdMap.get(judgeAlias);
 		Judge judge = judgeRepository.findById(realId).orElseThrow();
 		judge.setMemberOfRoom(room);
-        judgeRepository.save(judge);
+		judgeRepository.save(judge);
 	}
 
 	@When("I request to assign judge {string} to room {string} with isManager {word}")
 	public void i_request_to_assign_judge_to_room_with_is_manager(String judgeAlias, String roomId, String isManagerStr) throws Throwable {
 		boolean isManager = Boolean.parseBoolean(isManagerStr);
-		Long realJudgeId = judgeIdMap.getOrDefault(judgeAlias, -1L);
-        
+		String judgeId = judgeIdMap.containsKey(judgeAlias) ? String.valueOf(judgeIdMap.get(judgeAlias)) : judgeAlias;
+
 		String jsonPayload = String.format(
 				"{\"roomId\": \"%s\", \"judgeId\": \"%s\", \"isManager\": %b}",
-				roomId, realJudgeId, isManager
+				roomId, judgeId, isManager
 		);
 
 		stepDefs.result = stepDefs.mockMvc.perform(post("/project-rooms/assign-judge")
@@ -114,6 +114,9 @@ public class ProjectRoomSteps {
 
 	@Then("the response error should be {string}")
 	public void the_response_error_should_be(String expectedError) throws Throwable {
-		stepDefs.result.andExpect(jsonPath("$.error").value(expectedError));
+		stepDefs.result.andExpect(jsonPath("$.error").value(expectedError))
+				.andExpect(jsonPath("$.message").exists())
+				.andExpect(jsonPath("$.timestamp").exists())
+				.andExpect(jsonPath("$.path").value("/project-rooms/assign-judge"));
 	}
 }

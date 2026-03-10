@@ -79,6 +79,8 @@ class MatchControllerTest {
 				.content("{\"tableIdentifier\":\"\"}"))
 				.andExpect(status().isUnprocessableEntity())
 				.andExpect(jsonPath("$.error").value("VALIDATION_ERROR"))
-				.andExpect(jsonPath("$.message").isNotEmpty());
-	}
+				.andExpect(jsonPath("$.message").isNotEmpty())
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.path").value("/matches/15/assign-table"));
+}
 }

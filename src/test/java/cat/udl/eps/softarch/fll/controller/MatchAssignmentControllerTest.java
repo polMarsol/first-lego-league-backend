@@ -72,7 +72,9 @@ class MatchAssignmentControllerTest {
 				.andExpect(status().isConflict())
 				.andExpect(jsonPath("$.error").value("AVAILABILITY_CONFLICT"))
 				.andExpect(jsonPath("$.message")
-						.value("Referee is already assigned to another overlapping match"));
+						.value("Referee is already assigned to another overlapping match"))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.path").value("/matchAssignments/assign"));
 	}
 
 	@Test
@@ -137,6 +139,8 @@ class MatchAssignmentControllerTest {
 						"""))
 				.andExpect(status().isConflict())
 				.andExpect(jsonPath("$.error").value("BATCH_ASSIGNMENT_FAILED"))
+				.andExpect(jsonPath("$.timestamp").isNotEmpty())
+				.andExpect(jsonPath("$.path").value("/matchAssignments/batch"))
 				.andExpect(jsonPath("$.details.index").value(1))
 				.andExpect(jsonPath("$.details.matchId").value("11"))
 				.andExpect(jsonPath("$.details.refereeId").value("20"))

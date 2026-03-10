@@ -17,6 +17,7 @@ import cat.udl.eps.softarch.fll.repository.TeamRepository;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
+import io.cucumber.java.en.Then;
 
 public class MatchScoreRegistrationStepDefs {
 
@@ -124,6 +125,14 @@ public class MatchScoreRegistrationStepDefs {
 				.andExpect(jsonPath("$.matchId").value(match.getId()))
 					.andExpect(jsonPath("$.resultSaved").value(true))
 					.andExpect(jsonPath("$.rankingUpdated").value(true));
+	}
+
+	@Then("^The match score error response has code \"([^\"]*)\"$")
+	public void theMatchScoreErrorResponseHasCode(String errorCode) throws Throwable {
+		stepDefs.result
+				.andExpect(jsonPath("$.error").value(errorCode))
+				.andExpect(jsonPath("$.timestamp").exists())
+				.andExpect(jsonPath("$.path").value("/matchResults/register"));
 	}
 
 	private void postRegisterScorePayload(Long matchId, String payloadTeamAId, String payloadTeamBId, int payloadTeamAScore, int payloadTeamBScore)

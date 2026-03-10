@@ -3,6 +3,7 @@ package cat.udl.eps.softarch.fll.service;
 import cat.udl.eps.softarch.fll.domain.Coach;
 import cat.udl.eps.softarch.fll.domain.Team;
 import cat.udl.eps.softarch.fll.dto.AssignCoachResponse;
+import cat.udl.eps.softarch.fll.exception.TeamCoachAssignmentException;
 import cat.udl.eps.softarch.fll.repository.CoachRepository;
 import cat.udl.eps.softarch.fll.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
-import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -28,18 +28,32 @@ public class CoachService {
 
 		Team team = entityManager.find(Team.class, teamId, LockModeType.PESSIMISTIC_WRITE);
 		if (team == null) {
-			throw new NoSuchElementException("TEAM_NOT_FOUND");
+			throw new TeamCoachAssignmentException("TEAM_NOT_FOUND", "Team not found");
 		}
 		Coach coach = entityManager.find(Coach.class, coachId, LockModeType.PESSIMISTIC_WRITE);
 		if (coach == null) {
-			throw new NoSuchElementException("COACH_NOT_FOUND");
+			throw new TeamCoachAssignmentException("COACH_NOT_FOUND", "Coach not found");
 		}
 
-
-
-		team.addCoach(coach);
+		try {
+			team.addCoach(coach);
+		} catch (IllegalStateException exception) {
+			throw toAssignmentException(exception);
+		}
 		teamRepository.save(team);
 
 		return new AssignCoachResponse(teamId, coachId, "ASSIGNED");
+	}
+
+	private TeamCoachAssignmentException toAssignmentException(IllegalStateException exception) {
+		String errorCode = exception.getMessage();
+		String message = switch (errorCode) {
+			case "COACH_NOT_FOUND" -> "Coach not found";
+			case "COACH_ALREADY_ASSIGNED" -> "Coach is already assigned to this team";
+			case "MAX_COACHES_PER_TEAM_REACHED" -> "Team already has the maximum number of coaches";
+			case "MAX_TEAMS_PER_COACH_REACHED" -> "Coach already trains the maximum number of teams";
+			default -> "Invalid coach assignment";
+		};
+		return new TeamCoachAssignmentException(errorCode, message);
 	}
 }

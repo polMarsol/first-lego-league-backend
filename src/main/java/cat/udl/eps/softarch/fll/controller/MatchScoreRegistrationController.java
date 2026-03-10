@@ -1,5 +1,6 @@
 package cat.udl.eps.softarch.fll.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import cat.udl.eps.softarch.fll.controller.dto.ApiErrorResponse;
 import cat.udl.eps.softarch.fll.service.MatchScoreRegistrationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,7 +30,7 @@ public class MatchScoreRegistrationController {
 	public RegisterMatchScoreResponse registerFinalScore(@RequestBody RegisterMatchScoreRequest request) {
 		if (request == null || request.score() == null) {
 			throw new MatchScoreRegistrationService.RegistrationException(
-					MatchScoreRegistrationService.ErrorCode.INVALID_SCORE,
+					MatchScoreRegistrationService.ErrorCode.INVALID_SCORE_PAYLOAD,
 					"Invalid score payload");
 		}
 
@@ -44,14 +46,20 @@ public class MatchScoreRegistrationController {
 	}
 
 	@ExceptionHandler(MatchScoreRegistrationService.RegistrationException.class)
-	public ResponseEntity<MatchScoreErrorResponse> handleRegistrationError(MatchScoreRegistrationService.RegistrationException ex) {
-		return ResponseEntity.status(ex.getStatus()).body(new MatchScoreErrorResponse(ex.getErrorCode().name(), ex.getMessage()));
+	public ResponseEntity<ApiErrorResponse> handleRegistrationError(
+			MatchScoreRegistrationService.RegistrationException ex,
+			HttpServletRequest request) {
+		return ResponseEntity.status(ex.getStatus())
+				.body(ApiErrorResponse.of(ex.getErrorCode().name(), ex.getMessage(), request.getRequestURI()));
 	}
 
 	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<MatchScoreErrorResponse> handleInvalidPayload(Exception ex) {
+	public ResponseEntity<ApiErrorResponse> handleInvalidPayload(HttpServletRequest request) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-				.body(new MatchScoreErrorResponse(MatchScoreRegistrationService.ErrorCode.INVALID_SCORE.name(), "Invalid score payload"));
+				.body(ApiErrorResponse.of(
+						"INVALID_SCORE_PAYLOAD",
+						"Invalid score payload",
+						request.getRequestURI()));
 	}
 
 	public record RegisterMatchScoreRequest(Long matchId, MatchScorePayload score) {
@@ -61,8 +69,5 @@ public class MatchScoreRegistrationController {
 	}
 
 	public record RegisterMatchScoreResponse(Long matchId, boolean resultSaved, boolean rankingUpdated) {
-	}
-
-	public record MatchScoreErrorResponse(String error, String message) {
 	}
 }

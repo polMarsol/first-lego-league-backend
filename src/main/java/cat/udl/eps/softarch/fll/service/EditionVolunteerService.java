@@ -1,11 +1,11 @@
 package cat.udl.eps.softarch.fll.service;
 
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cat.udl.eps.softarch.fll.controller.dto.EditionVolunteersResponse;
 import cat.udl.eps.softarch.fll.controller.dto.VolunteerSummaryResponse;
 import cat.udl.eps.softarch.fll.domain.Volunteer;
+import cat.udl.eps.softarch.fll.exception.EditionVolunteerException;
 import cat.udl.eps.softarch.fll.repository.EditionRepository;
 import cat.udl.eps.softarch.fll.repository.FloaterRepository;
 import cat.udl.eps.softarch.fll.repository.JudgeRepository;
@@ -24,7 +24,7 @@ public class EditionVolunteerService {
 	@Transactional(readOnly = true)
 	public EditionVolunteersResponse getVolunteersGroupedByType(Long editionId) {
 		if (!editionRepository.existsById(editionId)) {
-			throw new NoSuchElementException("EDITION_NOT_FOUND");
+			throw new EditionVolunteerException("EDITION_NOT_FOUND", "Edition with id " + editionId + " not found");
 		}
 
 		var referees = refereeRepository.findByEditionId(editionId).stream()
