@@ -3,8 +3,12 @@ package cat.udl.eps.softarch.fll.steps;
 import static org.hamcrest.Matchers.hasItem;
 import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.springframework.http.MediaType;
 import cat.udl.eps.softarch.fll.domain.Edition;
 import cat.udl.eps.softarch.fll.domain.Round;
@@ -30,13 +34,19 @@ public class RoundSearchByEditionStepDefs {
 	}
 
 	@Given("An edition exists with year {int} and venue {string} and description {string}")
-	public void anEditionExistsWithYearAndVenueAndDescription(int year, String venue, String description) {
-		Edition edition = new Edition();
-		edition.setYear(year);
-		edition.setVenueName(venue);
-		edition.setDescription(description);
-		edition = editionRepository.save(edition);
-		currentEditionId = edition.getId();
+	public void anEditionExistsWithYearAndVenueAndDescription(int year, String venue, String description)
+			throws Exception {
+		var body = Map.of("year", year, "venueName", venue, "description", description);
+		String location = stepDefs.mockMvc.perform(
+				post("/editions")
+						.contentType(MediaType.APPLICATION_JSON)
+						.content(stepDefs.mapper.writeValueAsString(body))
+						.characterEncoding(StandardCharsets.UTF_8)
+						.accept(MediaType.APPLICATION_JSON)
+						.with(AuthenticationStepDefs.authenticate()))
+				.andExpect(status().isCreated())
+				.andReturn().getResponse().getHeader("Location");
+		currentEditionId = Long.parseLong(location.substring(location.lastIndexOf('/') + 1));
 	}
 
 	@Given("A round with number {int} exists for that edition")
