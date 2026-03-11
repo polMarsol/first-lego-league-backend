@@ -15,17 +15,8 @@ import org.springframework.http.MediaType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-<<<<<<< search-endpoint-TeamMember
 import java.util.UUID;
 
-=======
-import java.util.Random;
-import java.util.random.RandomGenerator;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
->>>>>>> main
 
 public class ProjectRoomSteps {
 
