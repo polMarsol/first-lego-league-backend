@@ -1,6 +1,7 @@
 package cat.udl.eps.softarch.fll.controller;
 
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import cat.udl.eps.softarch.fll.dto.MatchSearchItemResponse;
 import cat.udl.eps.softarch.fll.dto.MatchSearchPageResponse;
@@ -53,6 +54,23 @@ public class MatchSearchController {
 					"message", "Start time must not be after end time",
 					"timestamp", java.time.Instant.now().toString(),
 					"path", "/matches/filter"
+				));
+		}
+	}
+
+	@GetMapping("/search/findByTeam")
+	public ResponseEntity<Object> findByTeam(
+		@RequestParam(name = "team") String teamUri
+	) {
+		try {
+			List<MatchSearchItemResponse> matches = matchSearchService.findByTeam(teamUri);
+			var embedded = Map.of("matches", matches);
+			return ResponseEntity.ok(Map.of("_embedded", embedded));
+		} catch (IllegalArgumentException ex) {
+			return ResponseEntity.status(404)
+				.body(Map.of(
+					"error", ex.getMessage(),
+					"message", "The referenced team does not exist"
 				));
 		}
 	}
