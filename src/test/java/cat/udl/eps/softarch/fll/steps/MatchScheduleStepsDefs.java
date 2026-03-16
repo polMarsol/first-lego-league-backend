@@ -1,16 +1,14 @@
 package cat.udl.eps.softarch.fll.steps;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-
 import java.nio.charset.StandardCharsets;
 import java.time.LocalTime;
-
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
-
+import cat.udl.eps.softarch.fll.config.UserRoles;
 import cat.udl.eps.softarch.fll.domain.CompetitionTable;
 import cat.udl.eps.softarch.fll.domain.Match;
 import cat.udl.eps.softarch.fll.repository.MatchRepository;
@@ -65,7 +63,7 @@ public class MatchScheduleStepsDefs {
 				.content(jsonPayload)
 				.characterEncoding(StandardCharsets.UTF_8)
 				.accept(MediaType.APPLICATION_JSON)
-				.with(user("admin").roles("ADMIN")));
+				.with(user("admin").roles(UserRoles.ADMIN)));
 	}
 
 	@Then("the match scheduling response status should be {int}")

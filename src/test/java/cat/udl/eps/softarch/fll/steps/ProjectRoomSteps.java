@@ -1,9 +1,16 @@
 package cat.udl.eps.softarch.fll.steps;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.random.RandomGenerator;
+import org.springframework.http.MediaType;
+import cat.udl.eps.softarch.fll.config.UserRoles;
 import cat.udl.eps.softarch.fll.domain.Judge;
 import cat.udl.eps.softarch.fll.domain.ProjectRoom;
 import cat.udl.eps.softarch.fll.repository.JudgeRepository;
@@ -11,12 +18,6 @@ import cat.udl.eps.softarch.fll.repository.ProjectRoomRepository;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.springframework.http.MediaType;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.random.RandomGenerator;
 
 
 public class ProjectRoomSteps {
@@ -89,7 +90,7 @@ public class ProjectRoomSteps {
 		stepDefs.result = stepDefs.mockMvc.perform(post("/project-rooms/assign-judge")
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(jsonPayload)
-			.with(user("admin").roles("ADMIN")));
+			.with(user("admin").roles(UserRoles.ADMIN)));
 	}
 
 	@Then("the response status should be {int}")

@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
+import cat.udl.eps.softarch.fll.config.UserRoles;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -38,7 +39,7 @@ public class ManageFloaterStepDefs {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(stepDefs.mapper.writeValueAsString(body))
 				.characterEncoding(StandardCharsets.UTF_8)
-				.with(user("admin").roles("ADMIN")));
+				.with(user("admin").roles(UserRoles.ADMIN)));
 		
 		saveUrlFromLocationHeader();
 	}
@@ -54,7 +55,7 @@ public class ManageFloaterStepDefs {
 	public void i_request_to_retrieve_that_floater() throws Exception {
 		validateUrlIsPresent();
 		stepDefs.result = stepDefs.mockMvc.perform(get(currentFloaterUrl)
-				.with(user("admin").roles("ADMIN")));
+				.with(user("admin").roles(UserRoles.ADMIN)));
 	}
 
 	@When("I request to update the floater name to {string}")
@@ -67,14 +68,14 @@ public class ManageFloaterStepDefs {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(stepDefs.mapper.writeValueAsString(body))
 				.characterEncoding(StandardCharsets.UTF_8)
-				.with(user("admin").roles("ADMIN")));
+				.with(user("admin").roles(UserRoles.ADMIN)));
 	}
 
 	@When("I request to delete that floater")
 	public void i_request_to_delete_that_floater() throws Exception {
 		validateUrlIsPresent();
 		stepDefs.result = stepDefs.mockMvc.perform(delete(currentFloaterUrl)
-				.with(user("admin").roles("ADMIN")));
+				.with(user("admin").roles(UserRoles.ADMIN)));
 	}
 
 	@Then("the floater API response status should be {int}")
